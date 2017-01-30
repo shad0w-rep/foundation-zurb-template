@@ -1,14 +1,14 @@
 {
   "name": "foundation-zurb-template",
   "version": "1.0.0",
-  "description": "Official ZURB Template for Foundation for Sites.",
+  "description": "Customized Version of the ZURB Template for Foundation for Sites.",
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
     "build": "gulp build --production",
     "styleguide": "gulp styleguide"
   },
-  "author": "ZURB <foundation@zurb.com>",
+  "author": "shad0w-rep & ZURB <foundation@zurb.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
