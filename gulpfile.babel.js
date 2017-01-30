@@ -1,14 +1,15 @@
 'use strict';
 
-import plugins  from 'gulp-load-plugins';
-import yargs    from 'yargs';
-import browser  from 'browser-sync';
-import gulp     from 'gulp';
-import panini   from 'panini';
-import rimraf   from 'rimraf';
-import sherpa   from 'style-sherpa';
-import yaml     from 'js-yaml';
-import fs       from 'fs';
+import plugins   from 'gulp-load-plugins';
+import yargs     from 'yargs';
+import browser   from 'browser-sync';
+import gulp      from 'gulp';
+import panini    from 'panini';
+import rimraf    from 'rimraf';
+import sherpa    from 'style-sherpa';
+import yaml      from 'js-yaml';
+import fs        from 'fs';
+import cachebust from 'gulp-cache-bust';
 
 // Load all Gulp plugins into one variable
 const $ = plugins();
@@ -58,6 +59,9 @@ function pages() {
       data: 'src/data/',
       helpers: 'src/helpers/'
     }))
+    .pipe($.if(PRODUCTION, cachebust({
+        type: 'timestamp'
+    })))
     .pipe(gulp.dest(PATHS.dist));
 }
 
@@ -159,5 +163,4 @@ function watch() {
   gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass, browser.reload));
   gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
-  gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
 }
