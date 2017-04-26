@@ -5,7 +5,9 @@
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
-    "build": "gulp build --production",
+    "build": "gulp build --production && npm run chmod-dirs && npm run chmod-files",
+    "chmod-dirs": "find dist/ -type d -exec chmod 755 {} +",
+    "chmod-files": "find dist/ -type f -exec chmod 644 {} +",
     "styleguide": "gulp styleguide"
   },
   "author": "shad0w-rep & ZURB <foundation@zurb.com>",
