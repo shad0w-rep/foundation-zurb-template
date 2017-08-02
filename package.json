@@ -27,11 +27,8 @@
     "gulp": "gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^6.1.2",
-<<<<<<< HEAD
     "gulp-cache-bust": "^1.1.0",
-=======
     "gulp-clean-css": "^3.3.1",
->>>>>>> a7a874277b85c3305f24df7cc1ddc9cfa8d619ad
     "gulp-cli": "^1.2.1",
     "gulp-concat": "^2.5.2",
     "gulp-extname": "^0.2.0",

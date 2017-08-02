@@ -68,9 +68,4 @@ http://localhost:8000
 ```
 
 To create compressed, production-ready assets, run `npm run build`.
-<<<<<<< HEAD
-
-To create a Styleguide run `npm run styleguide`.
-=======
 # duckcreek-client
->>>>>>> a7a874277b85c3305f24df7cc1ddc9cfa8d619ad
