@@ -1,15 +1,19 @@
 'use strict';
 
-import plugins   from 'gulp-load-plugins';
-import yargs     from 'yargs';
-import browser   from 'browser-sync';
-import gulp      from 'gulp';
-import panini    from 'panini';
-import rimraf    from 'rimraf';
-import sherpa    from 'style-sherpa';
-import yaml      from 'js-yaml';
-import fs        from 'fs';
+import plugins       from 'gulp-load-plugins';
+import yargs         from 'yargs';
+import browser       from 'browser-sync';
+import gulp          from 'gulp';
+import panini        from 'panini';
+import rimraf        from 'rimraf';
+import sherpa        from 'style-sherpa';
+import yaml          from 'js-yaml';
+import fs            from 'fs';
+import webpackStream from 'webpack-stream';
+import webpack2      from 'webpack';
+import named         from 'vinyl-named';
 import cachebust from 'gulp-cache-bust';
+
 
 // Load all Gulp plugins into one variable
 const $ = plugins();
@@ -92,8 +96,8 @@ function sass() {
       browsers: COMPATIBILITY
     }))
     // Comment in the pipe below to run UnCSS in production
-    .pipe($.if(PRODUCTION, $.uncss(UNCSS_OPTIONS)))
-    .pipe($.if(PRODUCTION, $.cssnano()))
+    //.pipe($.if(PRODUCTION, $.uncss(UNCSS_OPTIONS)))
+    .pipe($.if(PRODUCTION, $.cleanCss({ compatibility: 'ie9' })))
     .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
     .pipe(gulp.dest(PATHS.dist + '/assets/css'))
     .pipe(browser.reload({ stream: true }));
@@ -103,27 +107,41 @@ function sass() {
 // In production, the file is minified
 // NOTE: the split of vendor/custom speeds up the build while developing
 // TODO: Maybe, combine vendor/custom javascript if PRODUCTION flag is set.
-function vendorJavascript() {
-    return gulp.src(PATHS.vendorJavascript)
-        .pipe($.sourcemaps.init())
-        .pipe($.babel({ignore: ['what-input.js']}))
-        .pipe($.concat('vendor.app.js'))
-        .pipe($.if(PRODUCTION, $.uglify()
-            .on('error', e => {
-                console.log(e);
-            })
-        ))
-        .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
-        .pipe(gulp.dest(PATHS.dist + '/assets/js'));
-}
+// function vendorJavascript() {
+//     return gulp.src(PATHS.vendorJavascript)
+//         .pipe($.sourcemaps.init())
+//         .pipe($.babel({ignore: ['what-input.js']}))
+//         .pipe($.concat('vendor.app.js'))
+//         .pipe($.if(PRODUCTION, $.uglify()
+//             .on('error', e => {
+//                 console.log(e);
+//             })
+//         ))
+//         .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
+//         .pipe(gulp.dest(PATHS.dist + '/assets/js'));
+// }
 
+let webpackConfig = {
+  module: {
+    rules: [
+      {
+        test: /.js$/,
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ]
+      }
+    ]
+  }
+}
 // Combine JavaScript into one file
 // In production, the file is minified
 function javascript() {
-  return gulp.src(PATHS.javascript)
+  return gulp.src(PATHS.entries)
+    .pipe(named())
     .pipe($.sourcemaps.init())
-    .pipe($.babel({ignore: ['what-input.js']}))
-    .pipe($.concat('app.js'))
+    .pipe(webpackStream(webpackConfig, webpack2))
     .pipe($.if(PRODUCTION, $.uglify()
       .on('error', e => { console.log(e); })
     ))
