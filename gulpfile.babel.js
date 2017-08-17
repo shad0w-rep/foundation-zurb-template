@@ -107,19 +107,6 @@ function sass() {
 // In production, the file is minified
 // NOTE: the split of vendor/custom speeds up the build while developing
 // TODO: Maybe, combine vendor/custom javascript if PRODUCTION flag is set.
-
-function vendorJavascript() {
-  return gulp.src(PATHS.vendorEntries)
-    .pipe(named())
-    .pipe($.sourcemaps.init())
-    .pipe(webpackStream(webpackConfig, webpack2))
-    .pipe($.if(PRODUCTION, $.uglify()
-      .on('error', e => { console.log(e); })
-    ))
-    .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
-    .pipe(gulp.dest(PATHS.dist + '/assets/js'));
-}
-
 let webpackConfig = {
   module: {
     rules: [
@@ -134,6 +121,19 @@ let webpackConfig = {
     ]
   }
 }
+
+function vendorJavascript() {
+  return gulp.src(PATHS.vendorEntries)
+    .pipe(named())
+    .pipe($.sourcemaps.init())
+    .pipe(webpackStream(webpackConfig, webpack2))
+    .pipe($.if(PRODUCTION, $.uglify()
+      .on('error', e => { console.log(e); })
+    ))
+    .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
+    .pipe(gulp.dest(PATHS.dist + '/assets/js'));
+}
+
 // Combine JavaScript into one file
 // In production, the file is minified
 function javascript() {
